@@ -1,9 +1,9 @@
 /*
     Projeto Final - AED2 - INF/UFG 2025-1
-    Tema: Sistema de Navegação Primitivo
-    Back-end completo (sem interface gráfica)
-    Autora: Verônica (e grupo)
-    Professor: André Luiz Moura
+    Tema: Sistema de NavegaÃ§Ã£o Primitivo
+    Back-end completo (sem interface grÃ¡fica)
+    Autores: Ana Luisa, Isadora, Lucas e VerÃ´nica 
+    Professor: AndrÃ© Luiz Moura
 */
 
 #include <stdio.h>
@@ -15,13 +15,13 @@
 #define MAX_VERTICES 10000
 #define INF 1e9
 
-// Estrutura de vértice com coordenadas
+// Estrutura de vÃ©rtice com coordenadas
 typedef struct {
     int id;
     double x, y;
 } Vertice;
 
-// Estrutura para lista de adjacência
+// Estrutura para lista de adjacÃªncia
 typedef struct vizinho {
     int id;
     double peso;
@@ -33,12 +33,12 @@ Vizinho* listaAdj[MAX_VERTICES];
 int totalVertices = 0;
 int totalArestas = 0;
 
-// Função para calcular distância Euclidiana entre dois pontos
+// FunÃ§Ã£o para calcular distÃ¢ncia Euclidiana entre dois pontos
 double calcDist(double x0, double y0, double x1, double y1) {
     return sqrt(pow(x0 - x1, 2.0) + pow(y0 - y1, 2.0));
 }
 
-// Adiciona aresta na lista de adjacência
+// Adiciona aresta na lista de adjacÃªncia
 void adicionarAresta(int origem, int destino, double peso) {
     Vizinho* novo = (Vizinho*) malloc(sizeof(Vizinho));
     novo->id = destino;
@@ -47,7 +47,7 @@ void adicionarAresta(int origem, int destino, double peso) {
     listaAdj[origem] = novo;
 }
 
-// Lê grafo a partir de arquivo .poly
+// LÃª grafo a partir de arquivo .poly
 void carregarGrafo(const char* nomeArquivo) {
     FILE* f = fopen(nomeArquivo, "r");
     if (!f) {
@@ -74,7 +74,7 @@ void carregarGrafo(const char* nomeArquivo) {
         fscanf(f, "%d %d %d %d", &id, &a, &b, &sentido);
         double peso = calcDist(vertices[a].x, vertices[a].y, vertices[b].x, vertices[b].y);
         adicionarAresta(a, b, peso);
-        if (sentido == 0) // mão dupla
+        if (sentido == 0) // mÃ£o dupla
             adicionarAresta(b, a, peso);
     }
 
@@ -83,7 +83,7 @@ void carregarGrafo(const char* nomeArquivo) {
     fclose(f);
 }
 
-// Dijkstra com lista de adjacência (sem heap ainda)
+// Dijkstra com lista de adjacÃªncia (sem heap ainda)
 void dijkstra(int origem, int destino) {
     double dist[MAX_VERTICES];
     int prev[MAX_VERTICES];
@@ -130,7 +130,7 @@ void dijkstra(int origem, int destino) {
         return;
     }
 
-    // Exibir estatísticas (RF07)
+    // Exibir estatÃ­sticas (RF07)
     printf("\nCusto total: %.2f unidades\n", dist[destino]);
     printf("Nos explorados: %d\n", explorados);
     printf("Tempo de execucao: %.4f segundos\n", tempoExec);
