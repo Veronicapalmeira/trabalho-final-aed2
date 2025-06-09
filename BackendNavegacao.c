@@ -1,7 +1,7 @@
 /*
     Projeto Final - AED2 - INF/UFG 2025-1
     Tema: Sistema de Navegação Primitivo
-    Back-end completo com Fila de Prioridade (Heap Mínima)
+    Back-end completo 
     Autores: Ana Luisa, Isadora, Lucas e Verônica
     Professor: André Luiz Moura
 */
