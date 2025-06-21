@@ -1,240 +1,235 @@
+# Sistema de Navegação Primitivo - INF/UFG 2025-1
+# Front-end com scroll dinâmico no resultado
+# Autoras: Ana Luisa, Isadora, Lucas e Verônica
+
 import pygame
 import math
-import time
-import sys
+import tkinter as tk
+from tkinter import filedialog
+import subprocess
+import os
 
-# Configurações iniciais
-LARGURA, ALTURA = 1000, 700
-RAIO = 10
-COR_VERTICE = (0, 102, 204)         # Azul
-COR_ARESTA = (0, 0, 0)              # Preto
-COR_ARESTA_UNICA = (255, 0, 0)      # Vermelho
-COR_ORIGEM = (0, 255, 0)            # Verde
-COR_DESTINO = (255, 0, 0)           # Vermelho
-COR_CAMINHO = (255, 255, 0)         # Amarelo
-FUNDO = (255, 255, 255)             # Branco
+LARGURA, ALTURA = 1360, 685
+LARGURA_MENU = 320
+ALTURA_CAIXA_TEXTO = 350
+COR_VERTICE = (0, 102, 204)
+COR_ARESTA = (0, 0, 0)
+COR_ARESTA_UNICA = (255, 0, 0)
+COR_ORIGEM = (0, 255, 0)
+COR_DESTINO = (255, 0, 0)
+COR_CAMINHO = (255, 255, 0)
+FUNDO = (255, 255, 255)
+COR_MENU = (245, 245, 245)
+COR_SCROLL = (180, 180, 180)
+COR_SCROLL_BG = (220, 220, 220)
+RAIO_VERTICE = 10
 
-# Dados do grafo
 vertices = []
 arestas = []
 matriz_adj = []
-direcoes = []
-
+arquivo_poly = ""
 origem_selecionada = None
-destino_selecionado = None
+destino_selecionada = None
 caminho = []
+info_text = "Carregue um arquivo .poly para começar."
+scroll_offset = 0
+tamanho_ponto = RAIO_VERTICE
 
-# Função para ler arquivo .poly
 def ler_poly(nome_arquivo):
-    global vertices, arestas, matriz_adj, direcoes
+    global vertices, arestas, matriz_adj, arquivo_poly
+    arquivo_poly = nome_arquivo
     vertices = []
     arestas = []
-
     with open(nome_arquivo, 'r') as f:
-        # Leitura do header de vértices
-        linha = f.readline()
-        n_vertices, _, _, _ = map(int, linha.strip().split())
+        n_vertices, _, _, _ = map(int, f.readline().strip().split())
         for _ in range(n_vertices):
             idv, x, y = f.readline().strip().split()
-            vertices.append( (int(idv), float(x), float(y)) )
-
-        # Leitura da linha que indica número de arestas
-        linha = f.readline()
-        n_arestas, _ = map(int, linha.strip().split())
-
+            vertices.append((int(idv), float(x), float(y)))
+        n_arestas, _ = map(int, f.readline().strip().split())
         for _ in range(n_arestas):
-            id_a, o, d, dir_a = f.readline().strip().split()
-            arestas.append( (int(o), int(d), int(dir_a)) )
+            _, o, d, dir_a = f.readline().strip().split()
+            arestas.append((int(o), int(d), int(dir_a)))
+    atualizar_matriz()
 
-    # Construir matriz adjacente com INF
-    INF = float('inf')
+def atualizar_matriz():
+    global matriz_adj
     n = len(vertices)
-    matriz_adj = [ [INF]*n for _ in range(n)]
-
-    # Calcular distâncias e preencher matriz adjacente
+    matriz_adj = [[float('inf')] * n for _ in range(n)]
     for o, d, dir_a in arestas:
-        xo, yo = vertices[o][1], vertices[o][2]
-        xd, yd = vertices[d][1], vertices[d][2]
-        dist = math.sqrt( (xo - xd)**2 + (yo - yd)**2 )
+        dist = math.dist(vertices[o][1:], vertices[d][1:])
         matriz_adj[o][d] = dist
         if dir_a == 0:
             matriz_adj[d][o] = dist
-    return matriz_adj
 
-# Dijkstra
-def dijkstra(inicio, fim, matriz):
-    n = len(matriz)
-    INF = float('inf')
-    dist = [INF]*n
-    prev = [-1]*n
-    visited = [False]*n
+def transformar(x, y):
+    escala = 0.46
+    return int(x * escala + LARGURA_MENU + 300), int(y * escala + 30)
 
-    dist[inicio] = 0
-    nos_explorados = 0
-
-    start_time = time.time()
-
-    for _ in range(n):
-        u = -1
-        min_dist = INF
-        for i in range(n):
-            if not visited[i] and dist[i] < min_dist:
-                min_dist = dist[i]
-                u = i
-        if u == -1:
-            break
-        visited[u] = True
-        nos_explorados += 1
-        for v in range(n):
-            if matriz[u][v] < INF and dist[u] + matriz[u][v] < dist[v]:
-                dist[v] = dist[u] + matriz[u][v]
-                prev[v] = u
-
-    end_time = time.time()
-    tempo_exec = end_time - start_time
-
-    if dist[fim] == INF:
-        return None, dist[fim], nos_explorados, tempo_exec
-
-    # Reconstruir caminho
-    path = []
-    atual = fim
-    while atual != -1:
-        path.append(atual)
-        atual = prev[atual]
-    path.reverse()
-
-    return path, dist[fim], nos_explorados, tempo_exec
-
-# Função para desenhar seta na mão única
-def desenhar_seta(tela, inicio, fim, cor, tamanho=12):
-    dx = fim[0] - inicio[0]
-    dy = fim[1] - inicio[1]
-    ang = math.atan2(dy, dx)
-    # Ponto final da linha (menos um pouco para a ponta)
-    fim_seta = (fim[0] - RAIO * math.cos(ang), fim[1] - RAIO * math.sin(ang))
-    pygame.draw.line(tela, cor, inicio, fim_seta, 2)
-    # Desenha triângulo da ponta
-    p1 = (fim_seta[0] - tamanho * math.cos(ang - math.pi/6), fim_seta[1] - tamanho * math.sin(ang - math.pi/6))
-    p2 = (fim_seta[0] - tamanho * math.cos(ang + math.pi/6), fim_seta[1] - tamanho * math.sin(ang + math.pi/6))
-    pygame.draw.polygon(tela, cor, [fim, p1, p2])
-
-# Checar se clicou dentro do vértice
-def clique_em_vertice(pos):
+def clique(pos):
     x, y = pos
     for i, (_, vx, vy) in enumerate(vertices):
-        # Transformar as coordenadas do grafo para a tela (escala e deslocamento)
-        sx, sy = transformar_coordenadas(vx, vy)
-        if (x - sx)**2 + (y - sy)**2 <= RAIO**2:
+        sx, sy = transformar(vx, vy)
+        if (x - sx) ** 2 + (y - sy) ** 2 <= tamanho_ponto ** 2:
             return i
     return None
 
-# Transformar coordenadas reais para tela (escala e deslocamento)
-def transformar_coordenadas(x, y):
-    # Ajustar para caber na tela, escala linear simples
-    # Definir escala e offset (pode ajustar para seu mapa)
-    escala_x = 0.6
-    escala_y = 0.6
-    offset_x = 50
-    offset_y = 50
-    sx = int(x * escala_x) + offset_x
-    sy = int(y * escala_y) + offset_y
-    return sx, sy
+def salvar_grafo_imagem(tela):
+    pygame.image.save(tela, "grafo_salvo.png")
 
-def main():
-    global origem_selecionada, destino_selecionado, caminho
+def rodar_dijkstra_backend(origem, destino):
+    with open("entrada.txt", "w") as f:
+        f.write(f"{origem}\n{destino}\n")
+    backend_exe = "backend.exe" if os.name == "nt" else "./backend"
+    if not os.path.exists(backend_exe):
+        return "Erro: backend não encontrado. Compile o backend."
+    try:
+        subprocess.run([backend_exe, arquivo_poly], check=True)
+    except subprocess.CalledProcessError:
+        return "Erro na execução do backend."
+    with open("saida.txt", "r") as f:
+        return f.read()
 
+def desenhar_interface():
+    global origem_selecionada, destino_selecionada, caminho, info_text, scroll_offset, tamanho_ponto
     pygame.init()
     tela = pygame.display.set_mode((LARGURA, ALTURA))
     pygame.display.set_caption("Sistema de Navegação Primitivo - INF/UFG")
-    fonte = pygame.font.SysFont(None, 24)
+    fonte = pygame.font.SysFont(None, 19)
 
-    matriz = ler_poly("SetorGoiania2.poly")
+    botoes = [
+        ("Carregar .poly", 20),
+        ("Adicionar ponto randômico", 60),
+        ("Traçar menor caminho", 100),
+        ("Resetar seleção", 140),
+        ("Salvar imagem do grafo", 180),
+        ("+ Tamanho ponto", 220),
+        ("- Tamanho ponto", 260)
+    ]
 
     rodando = True
-    clock = pygame.time.Clock()
-
-    info_text = ""
-
     while rodando:
         tela.fill(FUNDO)
+        pygame.draw.rect(tela, COR_MENU, (0, 0, LARGURA_MENU, ALTURA))
 
-        # Desenhar arestas
+        for txt, y in botoes:
+            pygame.draw.rect(tela, (200, 200, 200), (20, y, 280, 30))
+            tela.blit(fonte.render(txt, True, (0, 0, 0)), (30, y + 5))
+
         for o, d, dir_a in arestas:
-            xo, yo = transformar_coordenadas(vertices[o][1], vertices[o][2])
-            xd, yd = transformar_coordenadas(vertices[d][1], vertices[d][2])
-            cor_aresta = COR_ARESTA_UNICA if dir_a == 1 else COR_ARESTA
-            if dir_a == 0:
-                # mão dupla linha simples
-                pygame.draw.line(tela, cor_aresta, (xo, yo), (xd, yd), 2)
-            else:
-                # mão única com seta
-                desenhar_seta(tela, (xo, yo), (xd, yd), cor_aresta, tamanho=12)
+            x1, y1 = transformar(*vertices[o][1:])
+            x2, y2 = transformar(*vertices[d][1:])
+            cor = COR_ARESTA_UNICA if dir_a == 1 else COR_ARESTA
+            pygame.draw.line(tela, cor, (x1, y1), (x2, y2), 2)
 
-        # Desenhar vértices
         for i, (_, x, y) in enumerate(vertices):
-            sx, sy = transformar_coordenadas(x, y)
+            sx, sy = transformar(x, y)
             cor = COR_VERTICE
-            if origem_selecionada == i:
+            if i == origem_selecionada:
                 cor = COR_ORIGEM
-            elif destino_selecionado == i:
+            elif i == destino_selecionada:
                 cor = COR_DESTINO
-            pygame.draw.circle(tela, cor, (sx, sy), RAIO)
-            # Número do vértice
-            texto = fonte.render(str(i), True, (0, 0, 0))
-            tela.blit(texto, (sx - RAIO, sy - RAIO - 15))
+            pygame.draw.circle(tela, cor, (sx, sy), tamanho_ponto)
+            tela.blit(fonte.render(str(i), True, (0, 0, 0)), (sx - 10, sy - 20))
 
-        # Desenhar caminho mínimo em amarelo
-        if caminho and len(caminho) > 1:
-            for i in range(len(caminho) - 1):
-                o = caminho[i]
-                d = caminho[i + 1]
-                xo, yo = transformar_coordenadas(vertices[o][1], vertices[o][2])
-                xd, yd = transformar_coordenadas(vertices[d][1], vertices[d][2])
-                pygame.draw.line(tela, COR_CAMINHO, (xo, yo), (xd, yd), 4)
+        # Caixa de texto
+        caixa_rect = pygame.Rect(20, 310, 280, ALTURA_CAIXA_TEXTO)
+        pygame.draw.rect(tela, (230, 230, 230), caixa_rect)
 
-        # Mostrar texto de info
-        y_text = 10
-        for linha in info_text.split('\n'):
-            render = fonte.render(linha, True, (0, 0, 0))
-            tela.blit(render, (10, y_text))
-            y_text += 25
+        linhas = info_text.split('\n')
+        altura_total_texto = len(linhas) * 18
+        max_scroll = max(0, altura_total_texto - ALTURA_CAIXA_TEXTO)
 
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
+        if altura_total_texto > ALTURA_CAIXA_TEXTO:
+            scroll_bar_height = max(20, int(ALTURA_CAIXA_TEXTO * ALTURA_CAIXA_TEXTO / altura_total_texto))
+            scroll_bar_y = int(scroll_offset / max_scroll * (ALTURA_CAIXA_TEXTO - scroll_bar_height))
+            pygame.draw.rect(tela, COR_SCROLL_BG, (caixa_rect.right - 10, caixa_rect.top, 10, ALTURA_CAIXA_TEXTO))
+            pygame.draw.rect(tela, COR_SCROLL, (caixa_rect.right - 10, caixa_rect.top + scroll_bar_y, 10, scroll_bar_height))
+
+        y_text = 320 - scroll_offset
+        for linha in linhas:
+            if 320 <= y_text <= 310 + ALTURA_CAIXA_TEXTO - 18:
+                tela.blit(fonte.render(linha, True, (0, 0, 0)), (25, y_text))
+            y_text += 18
+
+        for ev in pygame.event.get():
+            if ev.type == pygame.QUIT:
                 rodando = False
-            elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
-                pos = pygame.mouse.get_pos()
-                vert = clique_em_vertice(pos)
-                if vert is not None:
-                    if origem_selecionada is None:
-                        origem_selecionada = vert
-                        info_text = f"Origem selecionada: {vert}"
-                    elif destino_selecionado is None:
-                        destino_selecionado = vert
-                        info_text = f"Destino selecionado: {vert}"
-                        # Rodar Dijkstra para calcular caminho
-                        caminho_calc, custo, nos_exp, tempo_exec = dijkstra(origem_selecionada, destino_selecionado, matriz)
-                        if caminho_calc is None:
-                            info_text = f"Não existe caminho entre {origem_selecionada} e {destino_selecionado}"
-                            caminho = []
-                        else:
-                            caminho = caminho_calc
-                            info_text = (f"Custo total do caminho: {custo:.2f} unidades\n"
-                                         f"Nós explorados: {nos_exp}\n"
-                                         f"Tempo de execução: {tempo_exec:.4f} segundos")
-                    else:
-                        # Resetar seleção para novo cálculo
-                        origem_selecionada = vert
-                        destino_selecionado = None
-                        caminho = []
-                        info_text = f"Origem selecionada: {vert}"
+            elif ev.type == pygame.MOUSEBUTTONDOWN:
+                if ev.button == 4:
+                    scroll_offset = max(0, scroll_offset - 20)
+                elif ev.button == 5:
+                    scroll_offset = min(max_scroll, scroll_offset + 20)
+                x, y = ev.pos
+                if x < LARGURA_MENU:
+                    for idx, (_, by) in enumerate(botoes):
+                        if by <= y <= by + 30:
+                            if idx == 0:
+                                root = tk.Tk()
+                                root.withdraw()
+                                file = filedialog.askopenfilename(filetypes=[("Poly Files", "*.poly")])
+                                if file:
+                                    ler_poly(file)
+                                    origem_selecionada = None
+                                    destino_selecionada = None
+                                    caminho = []
+                                    info_text = f"Arquivo carregado: {os.path.basename(file)}"
+                                    scroll_offset = 0
+                            elif idx == 1:
+                                if vertices:
+                                    import random
+                                    idv = len(vertices)
+                                    x_rand = random.uniform(0, 900)
+                                    y_rand = random.uniform(0, 600)
+                                    vertices.append((idv, x_rand, y_rand))
+                                    atualizar_matriz()
+                                    info_text = "Ponto aleatório adicionado."
+                                    scroll_offset = 0
+                            elif idx == 2:
+                                if origem_selecionada is not None and destino_selecionada is not None:
+                                    info_text = "Executando algoritmo no back-end..."
+                                    pygame.display.flip()
+                                    resultado = rodar_dijkstra_backend(origem_selecionada, destino_selecionada)
+                                    info_text = resultado
+                                    scroll_offset = 0
+                                else:
+                                    info_text = "Selecione origem e destino antes."
+                            elif idx == 3:
+                                origem_selecionada = None
+                                destino_selecionada = None
+                                caminho = []
+                                info_text = "Seleção reiniciada."
+                                scroll_offset = 0
+                            elif idx == 4:
+                                salvar_grafo_imagem(tela)
+                                info_text = "Imagem salva como grafo_salvo.png."
+                                scroll_offset = 0
+                            elif idx == 5:
+                                tamanho_ponto += 2
+                            elif idx == 6:
+                                tamanho_ponto = max(2, tamanho_ponto - 2)
+                else:
+                    v = clique(ev.pos)
+                    if v is not None:
+                        if origem_selecionada is None:
+                            origem_selecionada = v
+                            info_text = f"Origem: {v}"
+                        elif destino_selecionada is None:
+                            destino_selecionada = v
+                            info_text = f"Destino: {v}"
+                        scroll_offset = 0
 
         pygame.display.flip()
-        clock.tick(30)
-
     pygame.quit()
-    sys.exit()
 
 if __name__ == "__main__":
-    main()
+    backend_exe = "backend.exe" if os.name == "nt" else "./backend"
+    if not os.path.exists(backend_exe):
+        print("Compilando o back-end...")
+        try:
+            subprocess.run(["gcc", "backend.c", "-o", backend_exe], check=True)
+            print("Compilação concluída.")
+        except Exception as e:
+            print("Erro ao compilar o backend:", e)
+            exit(1)
+
+    desenhar_interface()
