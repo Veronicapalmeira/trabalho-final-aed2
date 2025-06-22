@@ -2,7 +2,7 @@
 
 **Instituto de Informártica/UFG – AED2 – 2025/1**  
 **Prof. André Luiz Moura**  
-**Autores**: Ana Luisa Pereira dos Santos, Isadora Yasmim da Silva, Lucas Costa de Alvarenga e Verônica Ribeiro Oliveira Palmeira
+**Autores**: Ana Luísa Pereira dos Santos, Isadora Yasmim da Silva, Lucas Costa de Alvarenga e Verônica Ribeiro Oliveira Palmeira
 
 ---
 
@@ -64,7 +64,7 @@ Dado um mapa em formato `.poly`, o usuário pode selecionar dois pontos (**orige
 
 ---
 
-<h2>📁 Estrutura do Projeto</h2>
+<h2>📁 Estruturação do Projeto</h2>
 
 <ul>
   <li>📁 <strong>Códigos-fontes</strong>
@@ -87,7 +87,7 @@ Dado um mapa em formato `.poly`, o usuário pode selecionar dois pontos (**orige
     </ul>
   </li>
   <li>📄 Documentação.pdf</li>
-  <li>📄 README.txt</li>
+  <li>📄 README.md</li>
   <li>📄 SetorGoiania2.poly</li>
 </ul>
 
@@ -99,4 +99,4 @@ Dado um mapa em formato `.poly`, o usuário pode selecionar dois pontos (**orige
 - Código modular, organizado e documentado para facilitar manutenção
 
 --------------------------------------------
-### DATA DE ENTREGA: 21/06/2025
+### 🚩 DATA DE ENTREGA: 21/06/2025
