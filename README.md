@@ -54,7 +54,6 @@ Dado um mapa em formato `.poly`, o usuário pode selecionar dois pontos (**orige
 
 --------------------------------------------
 ### 📂 ARQUIVOS DO PROJETO
---------------------------------------------
 - `backend.c`         : Código do algoritmo de Dijkstra em C  
 - `backend.exe`       : Versão compilada do back-end  
 - `navegacao_primitiva_pygame.py` : Interface gráfica em Python  
@@ -94,7 +93,6 @@ Dado um mapa em formato `.poly`, o usuário pode selecionar dois pontos (**orige
 
 --------------------------------------------
 ### 🔎 OBSERVAÇÕES FINAIS
---------------------------------------------
 - O projeto suporta grafos com vias de mão única e mão dupla (com distinção visual)
 - É possível adicionar vértices randômicos e ajustar visualmente os pontos
 - Compatível com Windows 
@@ -102,4 +100,3 @@ Dado um mapa em formato `.poly`, o usuário pode selecionar dois pontos (**orige
 
 --------------------------------------------
 ### DATA DE ENTREGA: 21/06/2025
---------------------------------------------
