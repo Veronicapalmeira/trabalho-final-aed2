@@ -247,6 +247,43 @@ def quebrar_linhas(texto, fonte, largura_max):
         linhas.append(linha_atual.rstrip())
     return linhas
 
+# ----------------------------
+# FUNÇÃO PARA DESENHAR LEGENDA NO CANTO INFERIOR DIREITO
+# ----------------------------
+def desenhar_legenda_caixa(tela, fonte):
+    largura_caixa = 280
+    altura_caixa = 130
+    margem = 15
+
+    x = LARGURA - largura_caixa - margem
+    y = ALTURA - altura_caixa - margem
+
+    pygame.draw.rect(tela, (248, 187, 208), (x, y, largura_caixa, altura_caixa), border_radius=10)
+    pygame.draw.rect(tela, COR_BORDA_BOTAO, (x, y, largura_caixa, altura_caixa), 2, border_radius=10)
+
+    espacamento_y = 25
+    texto_x = x + 45
+    texto_y = y + 7
+
+    itens = [
+        ((255, 255, 0), "Origem (ponto amarelo)"),
+        ((38, 255, 0), "Destino (ponto verde)"),
+        ((221, 0, 255), "Caminho (linha roxa claro)"),
+        ((136, 14, 79), "Mão dupla (linha roxa escura)"),
+        ((76, 0, 255), "Mão única (linha azul)"),
+    ]
+
+    for cor, texto in itens:
+        if "linha" not in texto:
+            pygame.draw.circle(tela, cor, (x + 20, texto_y + 10), 8)
+        else:
+            pygame.draw.line(tela, cor, (x + 10, texto_y + 10), (x + 30, texto_y + 10), 5)
+
+        texto_render = fonte.render(texto, True, COR_TEXTO)
+        tela.blit(texto_render, (texto_x, texto_y - 2))
+        texto_y += espacamento_y
+
+
 def desenhar_interface():
     global origem_selecionada, destino_selecionada, caminho, info_text, scroll_offset, tamanho_ponto
     global mostrar_numeros, mostrar_pesos, offset_x, offset_y, escala
@@ -419,17 +456,21 @@ def desenhar_interface():
             for i in range(len(caminho) - 1):
                 x1, y1 = transformar(*vertices[caminho[i]][1:])
                 x2, y2 = transformar(*vertices[caminho[i + 1]][1:])
-                pygame.draw.line(tela, COR_CAMINHO, (x1, y1), (x2, y2), 4)
+                pygame.draw.line(tela, COR_CAMINHO, (x1, y1), (x2, y2), 5)
 
         # Desenha vértices
         for i, (_, x, y) in enumerate(vertices):
             sx, sy = transformar(x, y)
-            cor = COR_VERTICE
             if i == origem_selecionada:
-                cor = COR_ORIGEM
+                 # Círculo maior atrás para destaque da origem
+                pygame.draw.circle(tela, (178, 181, 9), (sx, sy), tamanho_ponto + 2)
+                pygame.draw.circle(tela, COR_ORIGEM, (sx, sy), tamanho_ponto)
             elif i == destino_selecionada:
-                cor = COR_DESTINO
-            pygame.draw.circle(tela, cor, (sx, sy), tamanho_ponto)
+                # Círculo maior atrás para destaque do destino
+                pygame.draw.circle(tela, (11, 176, 74), (sx, sy), tamanho_ponto + 2)
+                pygame.draw.circle(tela, COR_DESTINO, (sx, sy), tamanho_ponto)
+            else:
+                pygame.draw.circle(tela, COR_VERTICE, (sx, sy), tamanho_ponto)
             if mostrar_numeros:
                 texto_num = fonte_numeros.render(str(i), True, (0, 0, 0))
                 tela.blit(texto_num, (sx - 10, sy - 20))
@@ -468,6 +509,9 @@ def desenhar_interface():
         texto_resetar = fonte_botoes.render("Resetar seleção", True, COR_TEXTO)
         texto_resetar_rect = texto_resetar.get_rect(center=botao_resetar_rect.center)
         tela.blit(texto_resetar, texto_resetar_rect)
+
+        if vertices:
+            desenhar_legenda_caixa(tela, fonte_botoes)
 
         pygame.display.flip()
 
