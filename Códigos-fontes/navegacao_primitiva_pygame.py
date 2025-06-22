@@ -1,5 +1,5 @@
 # Sistema de Navegação Primitivo - INF/UFG 2025-1
-# Front-end com scroll dinâmico no resultado
+# Front-end
 # Autoras: Ana Luisa, Isadora, Lucas e Verônica
 
 import os
