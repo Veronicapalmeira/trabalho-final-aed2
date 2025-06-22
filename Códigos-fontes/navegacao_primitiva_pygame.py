@@ -31,7 +31,7 @@ COR_ARESTA = (136, 14, 79)          # Tom roxo escuro, discreto
 COR_ARESTA_UNICA = (76, 0, 255)     # Rosa claro para destaque
 COR_ORIGEM = (255, 255, 0)          # Rosa vivo para origem
 COR_DESTINO = (38, 255, 0)           # Rosa escuro para destino
-COR_CAMINHO = (221, 0, 255)         # Rosa muito claro, visível sobre fundo
+COR_CAMINHO = (14, 21, 232)         # Rosa muito claro, visível sobre fundo
 FUNDO = (252, 228, 236)              # Rosa claríssimo - fundo principal
 COR_MENU = (248, 187, 208)           # Rosa opaco - menu lateral
 COR_SCROLL = (240, 98, 146)          # Scroll bar rosa suave
@@ -268,9 +268,9 @@ def desenhar_legenda_caixa(tela, fonte):
     itens = [
         ((255, 255, 0), "Origem (ponto amarelo)"),
         ((38, 255, 0), "Destino (ponto verde)"),
-        ((221, 0, 255), "Caminho (linha roxa claro)"),
+        ((14, 21, 232), "Caminho (linha azul)"),
         ((136, 14, 79), "Mão dupla (linha roxa escura)"),
-        ((76, 0, 255), "Mão única (linha azul)"),
+        ((195, 65, 224), "Mão única (linha roxa claro)"),
     ]
 
     for cor, texto in itens:
