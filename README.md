@@ -53,7 +53,6 @@ Dado um mapa em formato `.poly`, o usuário pode selecionar dois pontos (**orige
 
 --------------------------------------------
 ### 📂 ARQUIVOS DO PROJETO
---------------------------------------------
 - `backend.c`         : Código do algoritmo de Dijkstra em C  
 - `backend.exe`       : Versão compilada do back-end  
 - `navegacao_primitiva_pygame.py` : Interface gráfica em Python  
@@ -61,12 +60,17 @@ Dado um mapa em formato `.poly`, o usuário pode selecionar dois pontos (**orige
 - `saida.txt`         : Arquivo de saída com resultado da execução do algoritmo  
 - `SetorGoiania2.poly`: Arquivo de mapa com definição dos vértices e arestas  
 - `iniciar.bat`       : Script de inicialização rápida (opcional, Windows)
-- 
-
 
 <h2>📁 Estrutura do Projeto</h2>
 
 <ul>
+  <li>📁 <strong>Arquivos.poly</strong>
+    <ul>
+      <li>📄Anicums.poly </li>
+      <li>📄 SetorGoiania2.poly</li>
+      <li>📄 SetorPedro.poly</li>
+      <li>📄 flores.poly</li>
+    </ul>
   <li>📁 <strong>Códigos-fontes</strong>
     <ul>
       <li>📄 ConverteMapaParaCoordCartesianas.c </li>
@@ -76,19 +80,13 @@ Dado um mapa em formato `.poly`, o usuário pode selecionar dois pontos (**orige
   </li>
   <li>📁 <strong>SistemaNavegacao_InstaladorDoPrograma</strong>
     <ul>
-      <li>📄 README.md</li>
-      <li>📄 SetorGoiania2.poly</li>
       <li>📄 backend.exe</li>
-      <li>📄 entrada.txt</li>
-      <li>📄 grafo_salvo.png</li>
       <li>📄 iniciar.bat</li>
       <li>📄 navegacao_primitiva_pygame.py</li>
-      <li>📄 saida.txt</li>
     </ul>
   </li>
   <li>📄 Documentação.pdf</li>
   <li>📄 README.txt</li>
-  <li>📄 SetorGoiania2.poly</li>
 </ul>
 
 --------------------------------------------
@@ -100,4 +98,4 @@ Dado um mapa em formato `.poly`, o usuário pode selecionar dois pontos (**orige
 - Código modular, organizado e documentado para facilitar manutenção
 
 --------------------------------------------
-### DATA DE ENTREGA: 21/06/2025
+### DATA DE ENTREGA: 22/06/2025
