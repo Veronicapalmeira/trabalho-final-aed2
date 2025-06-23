@@ -28,10 +28,10 @@ ALTURA_CAIXA_TEXTO = 360
 
 COR_VERTICE = (255, 105, 180)        # Rosa escuro (flat elegante)
 COR_ARESTA = (136, 14, 79)          # Tom roxo escuro, discreto
-COR_ARESTA_UNICA = (76, 0, 255)     # Rosa claro para destaque
-COR_ORIGEM = (255, 255, 0)          # Rosa vivo para origem
-COR_DESTINO = (38, 255, 0)           # Rosa escuro para destino
-COR_CAMINHO = (14, 21, 232)         # Rosa muito claro, visível sobre fundo
+COR_ARESTA_UNICA = (195, 65, 224)     # Roxo claro para destaque
+COR_ORIGEM = (255, 255, 0)          # Amarelo vivo para origem
+COR_DESTINO = (38, 255, 0)           # Verde para destino
+COR_CAMINHO = (14, 21, 232)         # Azul, visível sobre fundo
 FUNDO = (252, 228, 236)              # Rosa claríssimo - fundo principal
 COR_MENU = (248, 187, 208)           # Rosa opaco - menu lateral
 COR_SCROLL = (240, 98, 146)          # Scroll bar rosa suave
