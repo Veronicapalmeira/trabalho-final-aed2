@@ -2,7 +2,7 @@
 
 **Instituto de Informártica/UFG – AED2 – 2025/1**  
 **Prof. André Luiz Moura**  
-**Autores**: Ana Luisa Pereira dos Santos, Isadora Yasmim da Silva, Lucas e Verônica Ribeiro Oliveira Palmeira
+**Autores**: Ana Luísa Pereira dos Santos, Isadora Yasmim da Silva, Lucas Costa de Alvarenga e Verônica Ribeiro Oliveira Palmeira
 
 ---
 
@@ -53,12 +53,11 @@ Dado um mapa em formato `.poly`, o usuário pode selecionar dois pontos (**orige
 
 --------------------------------------------
 ### 📂 ARQUIVOS DO PROJETO
-- `backend.c`         : Código do algoritmo de Dijkstra em C  
-- `backend.exe`       : Versão compilada do back-end  
+- `Anicums.poly`: Arquivo de mapa com definição dos vértices e arestas
+- `ConverteMapaParaCoordCartesianas.c `: Código em C para converter dados do mapa em coordenadas cartesianas utilizáveis no sistema
+- `backend.c`         : Código do algoritmo de Dijkstra em C
 - `navegacao_primitiva_pygame.py` : Interface gráfica em Python  
-- `entrada.txt`       : Arquivo gerado pelo front-end com os vértices escolhidos  
-- `saida.txt`         : Arquivo de saída com resultado da execução do algoritmo  
-- `SetorGoiania2.poly`: Arquivo de mapa com definição dos vértices e arestas  
+- `backend.exe`       : Versão compilada do back-end  
 - `iniciar.bat`       : Script de inicialização rápida (opcional, Windows)
 
 <h2>📁 Estrutura do Projeto</h2>
@@ -91,7 +90,7 @@ Dado um mapa em formato `.poly`, o usuário pode selecionar dois pontos (**orige
 
 --------------------------------------------
 ### 🔎 OBSERVAÇÕES FINAIS
---------------------------------------------
+
 - O projeto suporta grafos com vias de mão única e mão dupla (com distinção visual)
 - É possível adicionar vértices randômicos e ajustar visualmente os pontos
 - Compatível com Windows 
